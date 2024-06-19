@@ -9,7 +9,7 @@ import hatanaka
 getdate = str(date.today() - timedelta(days=60))
 
 link = f"https://api.simurg.space/datafiles/map_files?date={getdate}"
-file_name = f"{getdate}.zip"
+file_name = f"./{getdate}.zip"
 with open(file_name, "wb") as f:
     print("Downloading %s" % file_name)
     response = requests.get(link, stream=True)
@@ -34,3 +34,4 @@ for gzfile in os.listdir(filepath.split(".zip")[0]):
 for file in os.listdir(filepath.split(".zip")[0]):
      if (file[-2:]=="gz" or file[-2:]==".Z"):
           os.remove(filepath.split(".zip")[0]+"/"+file)
+os.remove(filepath)
