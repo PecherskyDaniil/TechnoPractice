@@ -7,6 +7,7 @@ import random
 from gnss_tec import rnx
 from sys import argv
 
+getdate=date.today() - timedelta(days=60)
 def seconds_num(time):
     arrtime = time.split(":")
     return int(arrtime[0])*3600+int(arrtime[1])*60+int(arrtime[2])
@@ -21,7 +22,7 @@ def parseRNX(filename, clientid):
         broker="broker.emqx.io"
         client = mqtt_client.Client(
             mqtt_client.CallbackAPIVersion.VERSION1, 
-            'dfewfwetrewf'
+            clientid
         )
         print("Connecting to broker",broker)
         print(client.connect(broker))
@@ -41,6 +42,15 @@ def parseRNX(filename, clientid):
         client.loop_stop()
 
 
-
-script, filename, clientid=argv
-parseRNX(filename, clientid)
+script, stationname=argv
+while True:
+    filename=""
+    for filen in os.listdir(f"./rnxfiles/{str(getdate)}"):
+        if (filen[:4].lower()==stationname):
+            filename=f"./rnxfiles/{str(getdate)}/{filen}"
+            break
+    if filename!="":
+        parseRNX(filename, stationname)
+    else:
+        break
+    getdate=getdate+timedelta(days=1)
