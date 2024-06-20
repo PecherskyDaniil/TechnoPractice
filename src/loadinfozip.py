@@ -9,9 +9,9 @@ import hatanaka
 getdate = str(date.today() - timedelta(days=90))
 
 link = f"https://api.simurg.space/datafiles/map_files?date={getdate}"
-file_name = f"./rnxfiles/{getdate}.zip"
-with open(file_name, "wb") as f:
-    print("Downloading %s" % file_name)
+filename = f"./rnxfiles/{getdate}.zip"
+with open(filename, "wb") as f:
+    print("Downloading %s" % filename)
     response = requests.get(link, stream=True)
     total_length = response.headers.get('content-length')
 
@@ -26,6 +26,7 @@ with open(file_name, "wb") as f:
             done = int(50 * dl / total_length)
             sys.stdout.write("\r[%s%s]" % ('=' * done, ' ' * (50-done)) )    
             sys.stdout.flush()
+
 with zipfile.ZipFile(filename, 'r') as zip_ref2:
         zip_ref2.extractall(path=filename.split(".zip")[0])
 for gzfile in os.listdir(filename.split(".zip")[0]):

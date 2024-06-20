@@ -7,7 +7,7 @@ import random
 from gnss_tec import rnx
 from sys import argv
 
-getdate=date.today() - timedelta(days=60)
+getdate=date.today() - timedelta(days=90)
 def seconds_num(time):
     arrtime = time.split(":")
     return int(arrtime[0])*3600+int(arrtime[1])*60+int(arrtime[2])
@@ -45,9 +45,9 @@ def parseRNX(filename, clientid):
 script, stationname=argv
 while True:
     filename=""
-    for filen in os.listdir(f"./rnxfiles/{str(getdate)}"):
+    for filen in os.listdir(f"/app/rnxfiles/{str(getdate)}"):
         if (filen[:4].lower()==stationname):
-            filename=f"./rnxfiles/{str(getdate)}/{filen}"
+            filename=f"/app/rnxfiles/{str(getdate)}/{filen}"
             break
     if filename!="":
         parseRNX(filename, stationname)
