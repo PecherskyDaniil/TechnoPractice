@@ -20,6 +20,8 @@ while True:
     time.sleep(60*60*21)
     starttime=datetime.now()
     thisdate+=timedelta(days=1)
+    if (os.path.isdir(str(thisdate-timedelta(days=2)))):
+        shutil.rmtree(f'/{str(thisdate-timedelta(days=2))}')
     start_loading(thisdate)
     currenttime=datetime.now()
     time.sleep(3*60*60-(currenttime-starttime).total_seconds)

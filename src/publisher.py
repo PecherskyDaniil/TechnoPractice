@@ -17,8 +17,8 @@ def parseRNX(filename, clientid):
         reader = rnx(obs_file)
         tecit = reader.next_tec()
         tec=tecit.__next__()
-        while seconds_num(strftime("%H:%M:%S", gmtime()))>seconds_num(tec.timestamp.strftime("%H:%M:%S")):
-            tec=tecit.__next__()
+        #while seconds_num(strftime("%H:%M:%S", gmtime()))>seconds_num(tec.timestamp.strftime("%H:%M:%S")):
+        #    tec=tecit.__next__()
         broker="broker.emqx.io"
         client = mqtt_client.Client(
             mqtt_client.CallbackAPIVersion.VERSION1, 
@@ -52,5 +52,6 @@ while True:
     if filename!="":
         parseRNX(filename, stationname)
     else:
-        break
+        time.sleep(30)
+        continue
     getdate=getdate+timedelta(days=1)
