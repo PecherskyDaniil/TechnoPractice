@@ -12,16 +12,16 @@ from loadalldockers import start_all_dockers
 from loadinfozip import start_loading
 
 starttime=datetime.now()
-thisdate=str(date.today()-timedelta(days=90))
-start_loading(thisdate)
-start_all_dockers(thisdate)
+thisdate=date.today()-timedelta(days=90)
+start_loading(str(thisdate))
+start_all_dockers(str(thisdate))
 currenttime=datetime.now()
 while True:
-    time.sleep(60*60*21)
+    time.sleep(60*21*20)
     starttime=datetime.now()
     thisdate+=timedelta(days=1)
-    if (os.path.isdir(str(thisdate-timedelta(days=2)))):
-        shutil.rmtree(f'/{str(thisdate-timedelta(days=2))}')
-    start_loading(thisdate)
+    if (os.path.isdir("./rnxfiles/"+str(thisdate-timedelta(days=2)))):
+        shutil.rmtree(f'./rnxfiles/{str(thisdate-timedelta(days=2))}')
+    start_loading(str(thisdate))
     currenttime=datetime.now()
-    time.sleep(3*60*60-(currenttime-starttime).total_seconds)
+    time.sleep(4*60*60-(currenttime-starttime).total_seconds())
