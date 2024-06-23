@@ -45,9 +45,9 @@ def parseRNX(filename, clientid):
     tec=tecit.__next__()
     #while seconds_num("23:57:00")>seconds_num(tec.timestamp.strftime("%H:%M:%S")):
     #    tec=tecit.__next__()
-    broker="sdb777f7.ala.dedicated.aws.emqxcloud.com"
-    username="admin"
-    password="admin"
+    broker=#your broker
+    username=#your username
+    password=#your password
     client = mqtt_client.Client(
         mqtt_client.CallbackAPIVersion.VERSION1, 
         clientid
