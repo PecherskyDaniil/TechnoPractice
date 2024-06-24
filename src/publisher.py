@@ -11,10 +11,12 @@ import sys
 import threading
 import logging
 from logging.handlers import TimedRotatingFileHandler
+import struct
 
 FORMATTER_STRING = "%(asctime)s - %(stationname)s - %(name)s - %(levelname)s - %(message)s"
 FORMATTER = logging.Formatter(FORMATTER_STRING)
 LOG_FILE = "./logs/rnxparser.log"
+script, stationname=argv
 
 starttime=min(60-int(datetime.datetime.now().strftime("%S")),abs(30-int(datetime.datetime.now().strftime("%S"))))
 time.sleep(starttime)    
@@ -47,12 +49,20 @@ def intervalPublish(tecit, curtec, client, fn, file):
     tec=curtec
     timer=threading.Timer(30.0, lambda: intervalPublish(tecit, tec, client, fn, file))
     timer.start()
-    result = fn+" "+tec.timestamp.strftime("%H:%M:%S")+'\n'
+    result = struct.pack(">L",int(tec.timestamp.timestamp()))
     prevtec=tec
-    logger.info("Parsing tec-records with time "+ tec.timestamp.strftime("%H:%M:%S"))
+    logger.debug("Parsing tec-records with time "+ tec.timestamp.strftime("%H:%M:%S"))
     while tec.timestamp.strftime("%H:%M:%S") == prevtec.timestamp.strftime("%H:%M:%S"):
         prevtec=tec
-        result+='{}: {} {}'.format(tec.satellite, tec.phase_tec, tec.p_range_tec,)+'\n'
+        if tec.phase_tec!=None:
+            phase_tec=float(tec.phase_tec)
+        else:
+            phase_tec=0
+        if tec.p_range_tec!=None:
+            p_range_tec=float(tec.p_range_tec)
+        else:
+            p_range_tec=0
+        result+=struct.pack(">ciff",tec.satellite[0].encode(),int(tec.satellite[1:]) , phase_tec, p_range_tec)
         try:
             tec=tecit.__next__()
         except:
@@ -61,10 +71,9 @@ def intervalPublish(tecit, curtec, client, fn, file):
             print("end")
             event=True
             return
-    logger.info("Publishing tec-records")
-    client.publish("lab/leds/state",result)
-    print(result)
-    logger.info("Waiting 30 seconds")
+    logger.debug("Publishing tec-records")
+    client.publish("stations/"+stationname,result)
+    logger.debug("Waiting 30 seconds")
 
 def parseRNX(filename, clientid, logger):
     global event
@@ -100,28 +109,28 @@ def parseRNX(filename, clientid, logger):
             break
 
           
-script, stationname=argv
+
 logger = get_logger("publisher",stationname)
 logger.info("Script started")
 while True:
     filename=""
-    logger.info("Searching file")
+    logger.debug("Searching file")
     try:
         for filen in os.listdir(f"./rnxfiles/{str(getdate)}"):
             if (filen[:4].lower()==stationname):
                 filename=f"./rnxfiles/{str(getdate)}/{filen}"
                 break
     except:
-        logger.info("Folder not found")
+        logger.debug("Folder not found")
         time.sleep(30)
         continue
     if filename!="":
-        logger.info("File found")
+        logger.debug("File found")
         event=False
         parseRNX(filename, stationname, logger)
     else:
-        logger.info("File not found")
+        logger.debug("File not found")
         time.sleep(30)
         continue
     getdate=getdate+timedelta(days=1)
-    logger.info("Switched date to "+str(getdate))
+    logger.debug("Switched date to "+str(getdate))
