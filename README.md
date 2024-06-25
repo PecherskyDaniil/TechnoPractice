@@ -25,3 +25,48 @@ pip install -r requirements.txt
 uvicorn src.fastapiscript:app --host 0.0.0.0 --port 8000
 ```
 После этого зайдите в браузере на страницу http://*ip вашей машины*/docs где удобнее управлять запросами.
+
+## Запросы на сервер
+# Запуск проекта
+```
+/launch/
+```
+Success Response
+```
+{"status":"started"}
+```
+Fail Response
+```
+{"status":"already launched"}
+```
+
+# Остановка проекта
+```
+/stop/
+```
+Success Response
+```
+{"status":"stopped"}
+```
+Fail Response
+```
+{"status":"nothing to stop"}
+```
+
+# Список топиков
+```
+/topics/
+```
+Response
+```
+{"topics":["abcd","efgh","jame"]}
+```
+
+# Статусы потоков
+```
+/streams/status/
+```
+Response
+```
+{"streams":[{"name":"abcd","status":"Working"},{"name":"jfdg","status":"Launching"},{"name":"olad","status":"Stopped"}]}
+```
