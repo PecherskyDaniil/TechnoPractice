@@ -1,0 +1,7 @@
+hatanaka
+shutil
+sh
+fastapi
+sys
+zipfile
+requests
