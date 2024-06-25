@@ -23,18 +23,21 @@ def get_logger(logger_name):
     return logger
 
 
-def start_all_dockers(thisdate):
+def start_all_dockers(thisdate,limits):
     logger = get_logger("dockerloader")
     logger.info("Building docker compose")
     getdate = thisdate
     os.system("docker build -t station .")
-    if (not(os.path.isfile("docker-compose.yaml"))):
-        dcinside="version: '3'\nservices:\n"
-        with open("docker-compose.yaml","w") as dcf:
-            for filename in os.listdir(f"./rnxfiles/{getdate}"):
-                if (filename[-3:]=="rnx"):
-                    dcinside+=f"  {filename[:4].lower()}:\n    volumes:\n    - type: bind\n      source: ./rnxfiles\n      target: /app/rnxfiles/\n    - type: bind\n      source: ./logs\n      target: /app/logs/\n    image: station:latest\n    command: python3 publisher.py {filename[:4].lower()}\n"
-            dcinside+=f"volumes:\n  rnxfiles:\n  logs:"
-            dcf.write(dcinside)
+    c=0
+    dcinside="version: '3'\nservices:\n"
+    with open("docker-compose.yaml","w") as dcf:
+        for filename in os.listdir(f"./rnxfiles/{getdate}"):
+            if (filename[-3:]=="rnx"):
+                c+=1
+                dcinside+=f"  {filename[:4].lower()}:\n    volumes:\n    - type: bind\n      source: ./rnxfiles\n      target: /app/rnxfiles/\n    - type: bind\n      source: ./logs\n      target: /app/logs/\n    image: station:latest\n    command: python3 publisher.py {filename[:4].lower()}\n"
+            if (c>int(limits)):
+                break
+        dcinside+=f"volumes:\n  rnxfiles:\n  logs:"
+        dcf.write(dcinside)
     logger.info("Starting docker compose")
     os.system("docker compose up -d")
