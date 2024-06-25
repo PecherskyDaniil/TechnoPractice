@@ -12,6 +12,8 @@ from loadalldockers import start_all_dockers
 from loadinfozip import start_loading
 import logging
 from logging.handlers import TimedRotatingFileHandler
+from sys import argv
+
 
 FORMATTER_STRING = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 FORMATTER = logging.Formatter(FORMATTER_STRING)
@@ -30,14 +32,15 @@ def get_logger(logger_name):
     logger.addHandler(file_handler)
     logger = logging.LoggerAdapter(logger)
     return logger
-
+scriptname, limits=argv
 logger = get_logger("mainscript")
 starttime=datetime.now()
 thisdate=date.today()-timedelta(days=90)
 logger.info("Start archive loading for date "+str(thisdate))
-start_loading(str(thisdate))
+if (not(os.path.isdir("./rnxfiles/"+str(thisdate)))):
+    start_loading(str(thisdate))
 logger.info("Starting docker containers")
-start_all_dockers(str(thisdate))
+start_all_dockers(str(thisdate),limits)
 currenttime=datetime.now()
 while True:
     time.sleep(60*20*60)
