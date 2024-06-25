@@ -1,4 +1,4 @@
-### TechnoPractice
+# TechnoPractice
 
 
 ## Описание проекта
@@ -27,7 +27,7 @@ uvicorn src.fastapiscript:app --host 0.0.0.0 --port 8000
 После этого зайдите в браузере на страницу http://*ip вашей машины*/docs где удобнее управлять запросами.
 
 ## Запросы на сервер
-# Запуск проекта
+### Запуск проекта
 ```/launch/```
 Success Response
 ```
@@ -38,7 +38,7 @@ Fail Response
 {"status":"already launched"}
 ```
 
-# Остановка проекта
+### Остановка проекта
 ```/stop/```
 Success Response
 ```
@@ -49,14 +49,14 @@ Fail Response
 {"status":"nothing to stop"}
 ```
 
-# Список топиков
+### Список топиков
 ```/topics/```
 Response
 ```
 {"topics":["abcd","efgh","jame"]}
 ```
 
-# Статусы потоков
+### Статусы потоков
 ```/streams/status/```
 Response
 ```
