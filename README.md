@@ -28,9 +28,7 @@ uvicorn src.fastapiscript:app --host 0.0.0.0 --port 8000
 
 ## Запросы на сервер
 # Запуск проекта
-```
-/launch/
-```
+```/launch/```
 Success Response
 ```
 {"status":"started"}
@@ -41,9 +39,7 @@ Fail Response
 ```
 
 # Остановка проекта
-```
-/stop/
-```
+```/stop/```
 Success Response
 ```
 {"status":"stopped"}
@@ -54,18 +50,14 @@ Fail Response
 ```
 
 # Список топиков
-```
-/topics/
-```
+```/topics/```
 Response
 ```
 {"topics":["abcd","efgh","jame"]}
 ```
 
 # Статусы потоков
-```
-/streams/status/
-```
+```/streams/status/```
 Response
 ```
 {"streams":[{"name":"abcd","status":"Working"},{"name":"jfdg","status":"Launching"},{"name":"olad","status":"Stopped"}]}
