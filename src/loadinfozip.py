@@ -9,10 +9,12 @@ import hatanaka
 import logging
 from logging.handlers import TimedRotatingFileHandler
 import sys
+import time
 
 FORMATTER_STRING = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 FORMATTER = logging.Formatter(FORMATTER_STRING)
 LOG_FILE = "./logs/rnxparser.log"
+
 def get_logger(logger_name):
     logger = logging.getLogger(logger_name)
     logger.setLevel(logging.DEBUG)
@@ -28,27 +30,40 @@ def get_logger(logger_name):
     return logger
 
 
+def archive_load(counter, getdate):
+    link = f"https://api.simurg.space/datafiles/map_files?date={getdate}"
+    filename = f"./rnxfiles/{getdate}.zip"
+    if counter>3:
+        return False
+    try:
+        with open(filename, "wb") as f:
+            response = requests.get(link, stream=True, timeout=10)
+            total_length = response.headers.get('content-length')
+            if total_length is None: # no content length header
+                f.write(response.content)
+            else:
+                dl = 0
+                total_length = int(total_length)
+                for data in response.iter_content(chunk_size=4096):
+                    dl += len(data)
+                    f.write(data)
+                    done = int(50 * dl / total_length)
+                    sys.stdout.write("\r[%s%s]" % ('=' * done, ' ' * (50-done)) )    
+                    sys.stdout.flush()
+        return True
+    except:
+        time.sleep(30)
+        return archive_load(counter+1, getdate)
+    
 def start_loading(thisdate):
     getdate = thisdate
     logger = get_logger("archiveloader")
-    link = f"https://api.simurg.space/datafiles/map_files?date={getdate}"
     filename = f"./rnxfiles/{getdate}.zip"
-    with open(filename, "wb") as f:
-        logger.info("Downloading %s" % filename)
-        response = requests.get(link, stream=True)
-        total_length = response.headers.get('content-length')
-
-        if total_length is None: # no content length header
-            f.write(response.content)
-        else:
-            dl = 0
-            total_length = int(total_length)
-            for data in response.iter_content(chunk_size=4096):
-                dl += len(data)
-                f.write(data)
-                done = int(50 * dl / total_length)
-                sys.stdout.write("\r[%s%s]" % ('=' * done, ' ' * (50-done)) )    
-                sys.stdout.flush()
+    logger.info("Downloading %s" % filename)
+    res=archive_load(0, getdate)
+    if (not(res)):
+        logger.error("Downloading failed")
+        return False
     logger.info("Extracting archive")
     with zipfile.ZipFile(filename, 'r') as zip_ref2:
             zip_ref2.extractall(path=filename.split(".zip")[0])
