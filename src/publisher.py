@@ -37,12 +37,17 @@ def get_logger(logger_name,stationname):
     return logger
 
 getdate=date.today() - timedelta(days=90)
+logger = get_logger("publisher",stationname)
+logger.info("Script started")
 
 def seconds_num(time):
     arrtime = time.split(":")
     return int(arrtime[0])*3600+int(arrtime[1])*60+int(arrtime[2])
 
 event=False
+
+def on_publish(client, userdata, mid):
+    logger.debug("Message Published")
 
 def intervalPublish(tecit, curtec, client, fn, file):
     global event
@@ -74,7 +79,7 @@ def intervalPublish(tecit, curtec, client, fn, file):
     client.publish("stations/"+stationname,result)
     logger.debug("Waiting 30 seconds")
 
-def parseRNX(filename, clientid, logger):
+def parseRNX(filename, clientid):
     global event
     logger.debug("Opening file")
     try:
@@ -96,6 +101,7 @@ def parseRNX(filename, clientid, logger):
         clientid
     )
     client.username_pw_set(username, password)
+    client.on_publish=on_publish
     logger.debug("Connecting to broker "+broker)
     try:
         client.connect(broker)
@@ -110,8 +116,6 @@ def parseRNX(filename, clientid, logger):
 
           
 
-logger = get_logger("publisher",stationname)
-logger.info("Script started")
 while True:
     filename=""
     logger.debug("Searching file")
@@ -127,7 +131,7 @@ while True:
     if filename!="":
         logger.debug("File found")
         event=False
-        parseRNX(filename, stationname, logger)
+        parseRNX(filename, stationname)
     else:
         logger.debug("File not found")
         time.sleep(30)
