@@ -36,8 +36,8 @@ scriptname, limits=argv
 logger = get_logger("mainscript")
 starttime=datetime.now()
 thisdate=date.today()-timedelta(days=90)
-logger.info("Start archive loading for date "+str(thisdate))
 if (not(os.path.isdir("./rnxfiles/"+str(thisdate)))):
+    logger.info("Start archive loading for date "+str(thisdate))
     start_loading(str(thisdate))
 logger.info("Starting docker containers")
 start_all_dockers(str(thisdate),limits)
@@ -49,7 +49,8 @@ while True:
     if (os.path.isdir("./rnxfiles/"+str(thisdate-timedelta(days=2)))):
         logger.info("Deleting old folder")
         shutil.rmtree(f'./rnxfiles/{str(thisdate-timedelta(days=2))}')
-    logger.info("Loading new folder")
-    start_loading(str(thisdate))
+    if (not(os.path.isdir("./rnxfiles/"+str(thisdate)))):
+        logger.info("Loading new folder")
+        start_loading(str(thisdate))
     currenttime=datetime.now()
     time.sleep(4*60*60-(currenttime-starttime).total_seconds())
