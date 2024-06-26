@@ -20,7 +20,7 @@ def launchscript(limit:int=1000):
     if (len(result)>0):
         return {"status":"already launched"}
     else:
-    	os.system(f"python3 mainscript.py {limit} &")
+    	os.system(f"python3 ./mainscript.py {limit} &")
     	return {"status":"started"}
 
 @app.get("/streams/status")
@@ -46,7 +46,7 @@ def stopscript():
     result = subprocess.check_output(command, shell=True, text=True).split("\n")[:-1]
     if (len(result)>0):
         os.system("docker stop $(docker ps | grep -v 'Exited'|grep -o 'src\-.*\-1')")
-        os.system("kill $(ps -a|grep python3| cut -d ' ' -f 3)")
+        os.system("kill $(ps -a|grep python3|sed 's/^[ \t]*//'|cut -d " " -f 1)")
         return {"status":"stopped"}
     else:
     	return {"status":"nothing to stop"}
