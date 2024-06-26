@@ -42,8 +42,10 @@ if (not(os.path.isdir("./rnxfiles/"+str(thisdate)))):
 logger.info("Starting docker containers")
 start_all_dockers(str(thisdate),limits)
 currenttime=datetime.now()
+firsttime=datetime.now().hour*60*60+datetime.now().minute*60+datetime.now().second
 while True:
-    time.sleep(60*20*60)
+    time.sleep(60*20*60-firsttime)
+    firsttime=0
     starttime=datetime.now()
     thisdate+=timedelta(days=1)
     if (os.path.isdir("./rnxfiles/"+str(thisdate-timedelta(days=2)))):
