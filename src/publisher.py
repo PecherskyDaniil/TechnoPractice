@@ -37,7 +37,7 @@ def get_logger(logger_name,stationname):
     return logger
 
 getdate=date.today() - timedelta(days=90)
-print(getdate)
+
 def seconds_num(time):
     arrtime = time.split(":")
     return int(arrtime[0])*3600+int(arrtime[1])*60+int(arrtime[2])
@@ -68,7 +68,6 @@ def intervalPublish(tecit, curtec, client, fn, file):
         except:
             client.disconnect()
             file.close()
-            print("end")
             event=True
             return
     logger.debug("Publishing tec-records")
@@ -85,9 +84,10 @@ def parseRNX(filename, clientid, logger):
         logger.error("File cannot be opened")
     reader = rnx(obs_file)
     tecit = reader.next_tec()
-    tec=tecit.__next__()
-    #while seconds_num("23:57:00")>seconds_num(tec.timestamp.strftime("%H:%M:%S")):
-    #    tec=tecit.__next__()
+    tec = tecit.__next__()
+    curtime = datetime.datetime.now().strftime("%H:%M:%S")
+    while seconds_num(curtime)>seconds_num(tec.timestamp.strftime("%H:%M:%S")):
+        tec=tecit.__next__()
     broker="sdb777f7.ala.dedicated.aws.emqxcloud.com"
     username="admin"
     password="admin"
