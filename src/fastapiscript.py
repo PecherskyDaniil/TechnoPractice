@@ -35,7 +35,7 @@ def getstreamsstatus():
         dttime=datetime.strptime(result[:19], '%Y-%m-%d %H:%M:%S')
         if "Script started" in result or "Searching file" in result or "File found" in result or "Opening file" in result or "File opened" in result or "Connecting to broker" in result or "Connected to broker" in result or "Parsing started" in result or "Parsing tec-records with time" in result:
             statuses["streams"].append({"name":topic,"status":"Launching"})
-        elif "Publishing tec-records" in result or "Waiting 30 seconds" in result and (dttime-curtime).total_seconds()<60:
+        elif "Message Published" in result and (dttime-curtime).total_seconds()<60:
             statuses["streams"].append({"name":topic,"status":"Working"})
         else:
             statuses["streams"].append({"name":topic,"status":"Stopped"})
