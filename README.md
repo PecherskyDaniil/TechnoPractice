@@ -20,9 +20,9 @@
 ```
 pip install -r requirements.txt
 ```
-Для запуска веб-сервера на fastapi используйте эту команду:
+Для запуска веб-сервера на fastapi используйте эту команду находясь в папке src:
 ```
-uvicorn src.fastapiscript:app --host 0.0.0.0 --port 8000
+uvicorn fastapiscript:app --host 0.0.0.0 --port 8000
 ```
 После этого зайдите в браузере на страницу http://*ip вашей машины*/docs где удобнее управлять запросами.
 
