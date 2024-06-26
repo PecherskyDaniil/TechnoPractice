@@ -40,9 +40,17 @@ if (not(os.path.isdir("./rnxfiles/"+str(thisdate)))):
     logger.info("Start archive loading for date "+str(thisdate))
     start_loading(str(thisdate))
 logger.info("Starting docker containers")
+firsttime=datetime.now().hour*60*60+datetime.now().minute*60+datetime.now().second
+if (firsttime>20*60*60):
+    thisdate+=timedelta(days=1)
+    if (not(os.path.isdir("./rnxfiles/"+str(thisdate)))):
+        logger.info("Start archive loading for date "+str(thisdate))
+        start_loading(str(thisdate))
+    firsttime=datetime.now().hour*60*60+datetime.now().minute*60+datetime.now().second
+    time.sleep(24*60*60-firsttime)
+    firsttime=0
 start_all_dockers(str(thisdate),limits)
 currenttime=datetime.now()
-firsttime=datetime.now().hour*60*60+datetime.now().minute*60+datetime.now().second
 while True:
     time.sleep(60*20*60-firsttime)
     firsttime=0
