@@ -37,7 +37,7 @@ def archive_load(counter, getdate):
         return False
     try:
         with open(filename, "wb") as f:
-            response = requests.get(link, stream=True, timeout=10)
+            response = requests.get(link, stream=True, timeout=60)
             total_length = response.headers.get('content-length')
             if total_length is None: # no content length header
                 f.write(response.content)
