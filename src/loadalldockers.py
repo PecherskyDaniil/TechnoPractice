@@ -28,7 +28,7 @@ def start_all_dockers(thisdate,limits):
     logger.info("Building docker compose")
     getdate = thisdate
     os.system("docker build -t station .")
-    c=0
+    c=1
     dcinside="version: '3'\nservices:\n"
     with open("docker-compose.yaml","w") as dcf:
         for filename in os.listdir(f"./rnxfiles/{getdate}"):
