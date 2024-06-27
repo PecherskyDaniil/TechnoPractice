@@ -53,7 +53,6 @@ def intervalPublish(tecit, curtec, client, fn, file):
     timer.start()
     result = struct.pack(">L",int(tec.timestamp.timestamp()))
     prevtec=tec
-    logger.debug("Parsing tec-records with time "+ tec.timestamp.strftime("%H:%M:%S"))
     while tec.timestamp.strftime("%H:%M:%S") == prevtec.timestamp.strftime("%H:%M:%S"):
         prevtec=tec
         if tec.phase_tec!=None:
