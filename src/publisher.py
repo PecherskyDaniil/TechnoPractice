@@ -67,6 +67,7 @@ def intervalPublish(tecit, curtec, client, fn, file):
         try:
             tec=tecit.__next__()
         except:
+            timer.cancel()
             client.disconnect()
             file.close()
             event=True
