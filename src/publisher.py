@@ -72,9 +72,7 @@ def intervalPublish(tecit, curtec, client, fn, file):
             file.close()
             event=True
             return
-    logger.debug("Publishing tec-records")
     client.publish("stations/"+stationname,result)
-    logger.debug("Waiting 30 seconds")
 
 def parseRNX(filename, clientid):
     global event
