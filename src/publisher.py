@@ -16,10 +16,7 @@ import struct
 FORMATTER_STRING = "%(asctime)s - %(stationname)s - %(name)s - %(levelname)s - %(message)s"
 FORMATTER = logging.Formatter(FORMATTER_STRING)
 LOG_FILE = "./logs/rnxparser.log"
-script, stationname=argv
-
-starttime=min(60-int(datetime.datetime.now().strftime("%S")),abs(30-int(datetime.datetime.now().strftime("%S"))))
-time.sleep(starttime)    
+script, stationname=argv   
 
 def get_logger(logger_name,stationname):
     extra = {'stationname':stationname}
@@ -108,6 +105,8 @@ def parseRNX(filename, clientid):
         logger.debug("Connected to broker")
     except:
         logger.error("Cannot connect to broker")
+    starttime=min(60-int(datetime.datetime.now().strftime("%S")),abs(30-int(datetime.datetime.now().strftime("%S"))))-0.5
+    time.sleep(starttime)
     logger.info("Parsing started") 
     intervalPublish(tecit, tec, client, filename, obs_file)
     while True:
