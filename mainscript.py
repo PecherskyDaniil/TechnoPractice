@@ -8,8 +8,8 @@ from sh import gunzip
 import zipfile
 import shutil
 import hatanaka
-from loadalldockers import start_all_dockers
-from loadinfozip import start_loading
+from dockers.loadalldockers import start_all_dockers
+from downloadfiles.loadinfozip import start_loading
 import logging
 from logging.handlers import TimedRotatingFileHandler
 from sys import argv
@@ -36,14 +36,14 @@ scriptname, limits=argv
 logger = get_logger("mainscript")
 starttime=datetime.now()
 thisdate=date.today()-timedelta(days=90)
-if (not(os.path.isdir("./rnxfiles/"+str(thisdate)))):
+if (not(os.path.isdir("./downloadfiles/rnxfiles/"+str(thisdate)))):
     logger.info("Start archive loading for date "+str(thisdate))
     start_loading(str(thisdate))
 logger.info("Starting docker containers")
 firsttime=datetime.now().hour*60*60+datetime.now().minute*60+datetime.now().second
 if (firsttime>20*60*60):
     thisdate+=timedelta(days=1)
-    if (not(os.path.isdir("./rnxfiles/"+str(thisdate)))):
+    if (not(os.path.isdir("./downloadfiles/rnxfiles/"+str(thisdate)))):
         logger.info("Start archive loading for date "+str(thisdate))
         start_loading(str(thisdate))
     firsttime=datetime.now().hour*60*60+datetime.now().minute*60+datetime.now().second
@@ -56,10 +56,10 @@ while True:
     firsttime=0
     starttime=datetime.now()
     thisdate+=timedelta(days=1)
-    if (os.path.isdir("./rnxfiles/"+str(thisdate-timedelta(days=2)))):
+    if (os.path.isdir("./downloadfiles/rnxfiles/"+str(thisdate-timedelta(days=2)))):
         logger.info("Deleting old folder")
-        shutil.rmtree(f'./rnxfiles/{str(thisdate-timedelta(days=2))}')
-    if (not(os.path.isdir("./rnxfiles/"+str(thisdate)))):
+        shutil.rmtree(f'./downloadfiles/rnxfiles/{str(thisdate-timedelta(days=2))}')
+    if (not(os.path.isdir("./downloadfiles/rnxfiles/"+str(thisdate)))):
         logger.info("Loading new folder")
         start_loading(str(thisdate))
     currenttime=datetime.now()

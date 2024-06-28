@@ -32,7 +32,7 @@ def get_logger(logger_name):
 
 def archive_load(counter, getdate):
     link = f"https://api.simurg.space/datafiles/map_files?date={getdate}"
-    filename = f"./rnxfiles/{getdate}.zip"
+    filename = f"./downloadfiles/rnxfiles/{getdate}.zip"
     if counter>3:
         return False
     try:
@@ -58,7 +58,7 @@ def archive_load(counter, getdate):
 def start_loading(thisdate):
     getdate = thisdate
     logger = get_logger("archiveloader")
-    filename = f"./rnxfiles/{getdate}.zip"
+    filename = f"./downloadfiles/rnxfiles/{getdate}.zip"
     logger.info("Downloading %s" % filename)
     res=archive_load(0, getdate)
     if (not(res)):

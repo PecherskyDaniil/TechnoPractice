@@ -4,9 +4,9 @@ FROM python:3.7
 WORKDIR /app
 
 # Install app dependencies
-COPY ./requirements.txt ./
+COPY ./dockerrequirements.txt ./
 
-RUN pip install -r requirements.txt
+RUN pip install -r dockerrequirements.txt
 RUN pip install git+https://github.com/gnss-lab/gnss-tec@dev
 # Bundle app source
 COPY ./publisher.py /app

@@ -89,10 +89,10 @@ def stopscript():
     except:
         logger.error("Command execution was failed")
     if (len(result)>0):
-        os.system("docker stop $(docker ps | grep -v 'Exited'|grep -o 'src\-.*\-1')")
+        os.system("docker stop $(docker ps | grep -v 'Exited'|grep -o 'technopractice\-.*\-1')")
         os.system("kill $(ps -a|grep python3|sed 's/^[ \t]*//'|cut -d \" \" -f 1)")
         logger.debug("Script stopped")
         return {"status":"stopped"}
     else:
         logger.debug("Nothing to stop")
-    	return {"status":"nothing to stop"}
+        return {"status":"nothing to stop"}
