@@ -7,12 +7,11 @@ import os
 from datetime import datetime
 app = FastAPI()
 
-FORMATTER_STRING = "%(asctime)s - %(name)s - %(request)s - %(levelname)s - %(message)s"
+FORMATTER_STRING = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 FORMATTER = logging.Formatter(FORMATTER_STRING)
 LOG_FILE = "./logs/rnxparser.log"
 
-def get_logger(logger_name,request):
-    extra = {'request':request}
+def get_logger(logger_name):
     logger = logging.getLogger(logger_name)
     logger.setLevel(logging.DEBUG)
     
@@ -23,30 +22,28 @@ def get_logger(logger_name,request):
     file_handler = TimedRotatingFileHandler(LOG_FILE, when='midnight')
     file_handler.setFormatter(FORMATTER)
     logger.addHandler(file_handler)
-    logger = logging.LoggerAdapter(logger, extra)
+    logger = logging.LoggerAdapter(logger)
     return logger
-
+logger=get_logger("fastapi")
 @app.get("/topics/")
 def getstreams():
-    logger=get_logger("fastapi","getstreams")
     logger.info("User requested topics")
     try:
         command = "docker ps | grep -v 'Exited'|grep -o '\-.*\-'|sed 's/-//g'"
         result = {"topics":subprocess.check_output(command, shell=True, text=True).split("\n")[:-1]}
     except:
-        logger.error("Command execution was failed")
+        logger.error("Command getstreams execution was failed")
     logger.debug("Topics returned")
     return result
 
 @app.post("/launch/")
 def launchscript(limit:int=1000):
-    logger=get_logger("fastapi","launchscript")
     logger.info("User launched scripts")
     try:
         command = "docker ps | grep -v 'Exited'|grep -o '\-.*\-'|sed 's/-//g'"
         result = subprocess.check_output(command, shell=True, text=True).split("\n")[:-1]
     except:
-        logger.error("Command execution was failed")
+        logger.error("Command launchscript execution was failed")
     if (len(result)>0):
         logger.debug("Scripts already launched")
         return {"status":"already launched"}
@@ -57,7 +54,6 @@ def launchscript(limit:int=1000):
 
 @app.get("/streams/status")
 def getstreamsstatus():
-    logger=get_logger("fastapi","getstreamstatus")
     logger.info("User requested stream statuses")
     statuses={"streams":[]}
     curtime=datetime.now()
@@ -65,7 +61,7 @@ def getstreamsstatus():
         command1 = "docker ps | grep -v 'Exited'|grep -o '\-.*\-'|sed 's/-//g'"
         topics = subprocess.check_output(command1, shell=True, text=True).split("\n")[:-1]
     except:
-        logger.error("Command execution was failed")
+        logger.error("Command getstreamsstatus execution was failed")
     for topic in topics:
         command2=f"grep {topic} ./logs/rnxparser.log | tail -1"
         result=subprocess.check_output(command2, shell=True, text=True)
@@ -81,13 +77,12 @@ def getstreamsstatus():
 
 @app.post("/stop/")
 def stopscript():
-    logger=get_logger("fastapi","stopscript")
     logger.info("User stops script")
     try:
         command = "docker ps | grep -v 'Exited'|grep -o '\-.*\-'|sed 's/-//g'"
         result = subprocess.check_output(command, shell=True, text=True).split("\n")[:-1]
     except:
-        logger.error("Command execution was failed")
+        logger.error("Command stopscript execution was failed")
     if (len(result)>0):
         os.system("docker stop $(docker ps | grep -v 'Exited'|grep -o 'technopractice\-.*\-1')")
         os.system("kill $(ps -a|grep python3|sed 's/^[ \t]*//'|cut -d \" \" -f 1)")
